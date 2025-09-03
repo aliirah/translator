@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Resources\SubmissionResource;
 use App\Models\Submission;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -12,5 +11,5 @@ it('return submission resource', function () {
     $res = $this->getJson("/api/submissions/{$submission->id}");
     $res->assertOk()
         ->assertJsonFragment(['id' => $submission->id])
-        ->assertJsonStructure(['data' => ['id','status','base_lang','target_lang','original','translated','error','created_at']]);
+        ->assertJsonStructure(['data' => ['id', 'status', 'base_lang', 'target_lang', 'original', 'translated', 'error', 'created_at']]);
 });

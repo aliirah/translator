@@ -15,12 +15,12 @@ beforeEach(function () {
 
 it('marks submission completed on successful OpenAI response', function () {
     $submission = Submission::factory()->create([
-        'name'        => 'Ali Rahgoshay',
-        'title'       => 'Testing an API',
+        'name' => 'Ali Rahgoshay',
+        'title' => 'Testing an API',
         'description' => 'Using Postman to verify JSON in responses.',
-        'base_lang'   => 'en',
+        'base_lang' => 'en',
         'target_lang' => 'es',
-        'status'      => SubmissionStatus::Pending->value,
+        'status' => SubmissionStatus::Pending->value,
     ]);
 
     $openAiPayload = [
@@ -29,14 +29,14 @@ it('marks submission completed on successful OpenAI response', function () {
         'output' => [
             ['type' => 'reasoning', 'summary' => []],
             [
-                'type'    => 'message',
-                'status'  => 'completed',
-                'role'    => 'assistant',
+                'type' => 'message',
+                'status' => 'completed',
+                'role' => 'assistant',
                 'content' => [[
                     'type' => 'output_text',
                     'text' => json_encode([
-                        'name'        => 'Ali Rahgoshay',
-                        'title'       => 'es title',
+                        'name' => 'Ali Rahgoshay',
+                        'title' => 'es title',
                         'description' => 'es description',
                     ], JSON_UNESCAPED_UNICODE),
                 ]],
@@ -61,20 +61,19 @@ it('marks submission completed on successful OpenAI response', function () {
         ->and($submission->error)->toBeNull();
 });
 
-
 it('marks submission failed on non-200 from OpenAI', function () {
     $submission = Submission::factory()->create([
-        'name'        => 'Ali Rahgoshay',
-        'title'       => 'Testing an API',
+        'name' => 'Ali Rahgoshay',
+        'title' => 'Testing an API',
         'description' => 'Using Postman to verify JSON in responses.',
-        'base_lang'   => 'en',
+        'base_lang' => 'en',
         'target_lang' => 'es',
-        'status'      => SubmissionStatus::Pending->value,
+        'status' => SubmissionStatus::Pending->value,
     ]);
 
     $errorBody = [
         'error' => [
-            'message' => "invalid response",
+            'message' => 'invalid response',
         ],
     ];
 
