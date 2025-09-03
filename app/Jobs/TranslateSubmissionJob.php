@@ -18,7 +18,7 @@ use Throwable;
 
 class TranslateSubmissionJob implements ShouldQueue
 {
-    use Queueable, Dispatchable, InteractsWithQueue, SerializesModels;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public int $tries = 3;
 
@@ -37,17 +37,17 @@ class TranslateSubmissionJob implements ShouldQueue
 
         $submission->update([
             'status' => SubmissionStatus::Processing,
-            'error'  => null,
+            'error' => null,
         ]);
 
         $sourceText = json_encode([
-            'name'        => $submission->name,
-            'title'       => $submission->title,
+            'name' => $submission->name,
+            'title' => $submission->title,
             'description' => $submission->description,
         ], JSON_UNESCAPED_UNICODE);
 
-        $connector = new OpenAIConnector();
-        $request   = new TranslateRequest(
+        $connector = new OpenAIConnector;
+        $request = new TranslateRequest(
             model: config('services.openai.model', 'gpt-5-mini'),
             sourceText: $sourceText,
             sourceLang: $submission->base_lang ?? 'en',
@@ -66,19 +66,19 @@ class TranslateSubmissionJob implements ShouldQueue
 
             $submission->update([
                 'translated' => $translated,
-                'status'     => SubmissionStatus::Completed,
+                'status' => SubmissionStatus::Completed,
             ]);
 
             Log::info('TranslateSubmissionJob completed', ['submission_id' => $submission->id]);
         } catch (Throwable $e) {
             $submission->update([
                 'status' => SubmissionStatus::Failed,
-                'error'  => $e->getMessage(),
+                'error' => $e->getMessage(),
             ]);
 
             Log::error('TranslateSubmissionJob failed', [
                 'submission_id' => $submission->id,
-                'message'       => $e->getMessage(),
+                'message' => $e->getMessage(),
             ]);
 
             $this->fail($e);
@@ -107,12 +107,13 @@ class TranslateSubmissionJob implements ShouldQueue
         }
 
         $chat = $payload['choices'][0]['message']['content'] ?? null;
+
         return is_string($chat) && $chat !== '' ? $chat : null;
     }
 
     private function decodeJson(?string $text): ?array
     {
-        if (!is_string($text) || $text === '') {
+        if (! is_string($text) || $text === '') {
             return null;
         }
 

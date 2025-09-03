@@ -6,7 +6,6 @@ use Saloon\Http\Connector;
 
 class OpenAIConnector extends Connector
 {
-
     public function resolveBaseUrl(): string
     {
         return 'https://api.openai.com/v1';
@@ -15,7 +14,7 @@ class OpenAIConnector extends Connector
     public function defaultHeaders(): array
     {
         return [
-          'Authorization' => 'Bearer ' . config('services.openai.key'),
+            'Authorization' => 'Bearer '.config('services.openai.key'),
         ];
     }
 }

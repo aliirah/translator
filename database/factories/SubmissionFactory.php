@@ -21,21 +21,21 @@ class SubmissionFactory extends Factory
             'name' => $this->faker->name(),
             'title' => $this->faker->sentence(4),
             'description' => $this->faker->paragraph(),
-            'base_lang'   => 'en',
+            'base_lang' => 'en',
             'target_lang' => $this->faker->randomElement(['es', 'fr', 'de']),
-            'status'      => SubmissionStatus::default()->value,
-            'translated'  => null,
-            'error'       => null,
+            'status' => SubmissionStatus::default()->value,
+            'translated' => null,
+            'error' => null,
         ];
     }
 
     public function completed(): static
     {
         return $this->state(fn () => [
-            'status'     => SubmissionStatus::Completed->value,
+            'status' => SubmissionStatus::Completed->value,
             'translated' => [
-                'name'        => $this->faker->name(),
-                'title'       => $this->faker->sentence(4),
+                'name' => $this->faker->name(),
+                'title' => $this->faker->sentence(4),
                 'description' => $this->faker->paragraph(),
             ],
         ]);
@@ -45,7 +45,7 @@ class SubmissionFactory extends Factory
     {
         return $this->state(fn () => [
             'status' => SubmissionStatus::Failed->value,
-            'error'  => 'Translation failed for testing purposes',
+            'error' => 'Translation failed for testing purposes',
         ]);
     }
 }

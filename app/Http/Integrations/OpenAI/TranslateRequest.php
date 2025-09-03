@@ -38,21 +38,21 @@ class TranslateRequest extends Request implements HasBody
                 'role' => 'user',
                 'content' => [[
                     'type' => 'input_text',
-                    'text' => $this->prompt() . "\n\n" . $this->sourceText,
+                    'text' => $this->prompt()."\n\n".$this->sourceText,
                 ]],
             ]],
             'text' => [
                 'format' => [
-                    'type'  => 'json_schema',
-                    'name'  => 'translation',
-                    'schema'=> [
-                        'type'       => 'object',
+                    'type' => 'json_schema',
+                    'name' => 'translation',
+                    'schema' => [
+                        'type' => 'object',
                         'properties' => [
-                            'name'        => ['type' => 'string'],
-                            'title'       => ['type' => 'string'],
+                            'name' => ['type' => 'string'],
+                            'title' => ['type' => 'string'],
                             'description' => ['type' => 'string'],
                         ],
-                        'required' => ['name','title','description'],
+                        'required' => ['name', 'title', 'description'],
                         'additionalProperties' => false,
                     ],
                 ],

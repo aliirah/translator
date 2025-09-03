@@ -17,16 +17,16 @@ class SubmissionResource extends JsonResource
         return [
             'id' => $this->id,
             'status' => $this->status,
-            'base_lang'    => $this->base_lang,
-            'target_lang'  => $this->target_lang,
-            'original'     => [
-                'name'        => $this->name,
-                'title'       => $this->title,
+            'base_lang' => $this->base_lang,
+            'target_lang' => $this->target_lang,
+            'original' => [
+                'name' => $this->name,
+                'title' => $this->title,
                 'description' => $this->description,
             ],
-            'translated'   => $this->translated,
-            'error'        => $this->error,
-            'created_at'   => $this->created_at,
+            'translated' => $this->translated,
+            'error' => $this->error,
+            'created_at' => $this->created_at,
         ];
     }
 }

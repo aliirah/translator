@@ -12,7 +12,7 @@ class RestServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->singleton('restClass', fn () => new RestClass());
+        $this->app->singleton('restClass', fn () => new RestClass);
     }
 
     /**
