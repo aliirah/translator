@@ -1,61 +1,131 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Translator API
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A Laravel API that accepts user input, queues a translation job, sends it to the OpenAI Responses API, and stores the translated JSON.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Setup
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+To run this project locally:
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+1. **Install dependencies**  
+   Make sure you have PHP 8.2+, Composer, and Redis installed. Then:
 
-## Learning Laravel
+   ```bash
+   composer install
+   ```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+2. **Configure environment**  
+   Copy the example env file and generate the app key:
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+   Update `.env` with your DB + Redis connection, and your OpenAI key:
 
-## Laravel Sponsors
+   ```dotenv
+   DB_CONNECTION=mysql   # or sqlite
+   QUEUE_CONNECTION=redis
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+   OPENAI_API_KEY=your_api_key_here
+   OPENAI_MODEL=gpt-5-mini
+   ```
 
-### Premium Partners
+3. **Run migrations & seeders**
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+   ```bash
+   php artisan migrate --seed
+   ```
 
-## Contributing
+4. **Start the app**
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+   ```bash
+   php artisan serve
+   php artisan queue:work
+   ```
 
-## Code of Conduct
+---
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## API Endpoints
 
-## Security Vulnerabilities
+### Create a submission
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+**POST** `https://translator.test/api/submissions`
 
-## License
+**Payload:**
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```json
+{
+  "name": "Ali Rahgoshay",
+  "title": "Testing API",
+  "description": "I'm using postman to send a request",
+  "target_lang": "fr"
+}
+```
+
+Response will be `202 Accepted` with the submission object.  
+The translation runs in the background.
+
+---
+
+### Fetch a submission
+
+**GET** `https://translator.test/api/submissions/44`
+
+**Response:**
+
+```json
+{
+  "data": {
+    "id": 45,
+    "status": "completed",
+    "base_lang": "en",
+    "target_lang": "fr",
+    "original": {
+      "name": "Ali Rahgoshay",
+      "title": "Testing API",
+      "description": "I'm using postman to send a request"
+    },
+    "translated": {
+      "name": "Ali Rahgoshay",
+      "title": "Test de l'API",
+      "description": "J'utilise Postman pour envoyer une requête."
+    },
+    "error": null,
+    "created_at": "2025-09-03T14:24:51.000000Z"
+  }
+}
+```
+
+---
+
+## Monitoring & Debugging
+
+For simplicity this project doesn’t include additional monitoring, but in real-world apps it’s highly recommended to add:
+
+- **Laravel Telescope** → for real-time monitoring of requests, jobs, exceptions.
+- **Laravel Pulse** → for performance insights and bottleneck detection.
+
+Both integrate seamlessly with Laravel and make debugging queues much easier.
+
+---
+
+## Running Tests
+
+Tests are written with **Pest** and use Saloon’s `MockClient` to fake OpenAI responses.
+
+Run all tests:
+
+```bash
+php artisan test
+```
+
+Or directly with Pest:
+
+```bash
+./vendor/bin/pest
+```
+
+---
