@@ -48,7 +48,7 @@ class TranslateSubmissionJob implements ShouldQueue
 
         $connector = new OpenAIConnector;
         $request = new TranslateRequest(
-            model: config('services.openai.model', 'gpt-5-mini'),
+            model: config('services.openai.model'),
             sourceText: $sourceText,
             sourceLang: $submission->base_lang ?? 'en',
             targetLang: $submission->target_lang ?? 'es'

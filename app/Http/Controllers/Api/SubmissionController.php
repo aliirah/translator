@@ -17,7 +17,7 @@ class SubmissionController extends Controller
         $submission = Submission::query()->create($validated);
 
         TranslateSubmissionJob::dispatch($submission->id);
-        /* we can add have TranslateSubmissionJob::dispatch($submission->id)->onQueue('translations');
+        /* we can have TranslateSubmissionJob::dispatch($submission->id)->onQueue('translations');
         but for keep it simple i'm not using named queues */
 
         // TODO - use telescope for monitoring the queues
