@@ -4,6 +4,20 @@ A Laravel API that accepts user input, queues a translation job, sends it to the
 
 ---
 
+## Project Notes
+
+1. **Custom REST Facade**  
+   A custom `Rest` facade is included to standardize all JSON API responses across the application.  
+   This keeps controller methods clean and ensures consistent return formats for success, errors, and custom responses.
+
+2. **Submission Status Tracking**  
+   Submissions include a `status` field for better monitoring.
+    - New submissions start as **pending**.
+    - Once the queued job runs, they are marked **completed** or **failed**.
+    - If a job fails, the error message is stored in the database for easier debugging.
+
+---
+
 ## Setup
 
 To run this project locally:
