@@ -25,6 +25,7 @@ class StoreRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'title' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string', 'max:5000'],
+            // TODO - Add Rule::in(config('languages.supported')
             'target_lang' => ['nullable', 'string', 'size:2'],
         ];
     }
